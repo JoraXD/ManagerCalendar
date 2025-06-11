@@ -4,7 +4,6 @@ import CalendarGrid from '../components/CalendarGrid';
 import CreateTourModal from '../components/CreateTourModal';
 import ManageGuidesModal from '../components/ManageGuidesModal';
 import Sidebar from '../components/Sidebar';
-import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useLanguage } from '../contexts/LanguageContext';
 import { fetchTours, fetchClients, fetchGuides, type Tour } from '../services/api';
 import './Dashboard.css';
@@ -45,11 +44,9 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      {/* Header with Language Switcher */}
       <div className="dashboard-header">
         <div className="header-content">
           <h1 className="text-2xl font-bold text-gray-800">{t('dashboard')}</h1>
-          <LanguageSwitcher />
         </div>
       </div>
 

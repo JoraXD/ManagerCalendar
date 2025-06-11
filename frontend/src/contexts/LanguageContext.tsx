@@ -1,92 +1,12 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-
-export type Language = 'en' | 'ru';
+import { createContext, useContext, ReactNode } from 'react';
 
 interface LanguageContextType {
-  language: Language;
-  setLanguage: (lang: Language) => void;
   t: (key: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 const translations = {
-  en: {
-    // Navigation
-    'dashboard': 'Dashboard',
-    'tours': 'Tours',
-    'guides': 'Guides',
-    'clients': 'Clients',
-    
-    // Calendar
-    'calendar': 'Calendar',
-    'month': 'Month',
-    'week': 'Week',
-    'day': 'Day',
-    'today': 'Today',
-    
-    // Tours
-    'create_tour': 'Create Tour',
-    'tour_name': 'Tour Name',
-    'description': 'Description',
-    'date': 'Date',
-    'time': 'Time',
-    'venue': 'Venue',
-    'group_size': 'Group Size',
-    'duration': 'Duration (hours)',
-    'price': 'Price',
-    'client': 'Customer',
-    'status': 'Status',
-    'assigned_guide': 'Assigned Guide',
-    
-    // Tour statuses
-    'pending': 'Pending',
-    'confirmed': 'Confirmed',
-    'guide_needed': 'Guide Needed',
-    'completed': 'Completed',
-    'cancelled': 'Cancelled',
-    
-    // Guides
-    'manage_guides': 'Manage Guides',
-    'add_guide': 'Add Guide',
-    'guide_name': 'Guide Name',
-    'email': 'Email',
-    'phone': 'Phone',
-    'telegram': 'Telegram',
-    'contact_info': 'Contact Information',
-    'total_earnings': 'Total Earnings',
-    'total_tours': 'Total Tours',
-    'active': 'Active',
-    'inactive': 'Inactive',
-    
-    // Clients
-    'client_name': 'Client Name',
-    'blacklisted': 'Blacklisted',
-    
-    // Actions
-    'save': 'Save',
-    'cancel': 'Cancel',
-    'edit': 'Edit',
-    'delete': 'Delete',
-    'assign': 'Assign',
-    'create': 'Create',
-    'update': 'Update',
-    
-    // Statistics
-    'statistics': 'Statistics',
-    'total_tours_count': 'Total Tours',
-    'confirmed_tours': 'Confirmed Tours',
-    'pending_tours': 'Pending Tours',
-    
-    // Filters
-    'filters': 'Filters',
-    'show_confirmed': 'Show Confirmed',
-    'show_pending': 'Show Pending',
-    'show_guide_needed': 'Show Guide Needed',
-    
-    // View Mode
-    'view_mode': 'View Mode',
-  },
   ru: {
     // Navigation
     'dashboard': 'Панель управления',
@@ -166,14 +86,12 @@ const translations = {
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('en');
-
   const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[Language]] || key;
+    return translations.ru[key as keyof typeof translations.ru] || key;
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ t }}>
       {children}
     </LanguageContext.Provider>
   );
