@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
 import { X, Calendar, MapPin, Users, Clock, DollarSign } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { createTour, CreateTourData, Client } from '../services/api';
+import { createTour, createClient, CreateTourData, CreateClientData, Client } from '../services/api';
 import './CreateTourModal.css';
 
 interface CreateTourModalProps {
@@ -19,7 +19,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
 }) => {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateTourData>();
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<CreateTourData>();
 
   const createTourMutation = useMutation(createTour, {
     onSuccess: () => {
@@ -32,13 +32,32 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
     }
   });
 
-  const onSubmit = (data: CreateTourData) => {
+  const createClientMutation = useMutation(createClient, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('clients');
+    },
+  });
+
+  const [showNewClient, setShowNewClient] = useState(false);
+  const [newClient, setNewClient] = useState<CreateClientData>({
+    name: '',
+    contact_info: '',
+    tg_alias: '',
+  });
+
+  const onSubmit = async (data: CreateTourData) => {
+    let clientId = data.client_id;
+    if (data.client_id === 'new') {
+      const created = await createClientMutation.mutateAsync(newClient);
+      clientId = String(created.id);
+    }
+
     createTourMutation.mutate({
       ...data,
       price: Number(data.price),
       group_size: Number(data.group_size),
       duration: Number(data.duration),
-      client_id: Number(data.client_id)
+      client_id: Number(clientId)
     });
   };
 
@@ -160,6 +179,11 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
             <select
               id="client_id"
               {...register('client_id', { required: 'Client selection is required' })}
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue('client_id', value);
+                setShowNewClient(value === 'new');
+              }}
             >
               <option value="">{t('client')}</option>
               {clients.map(client => (
@@ -167,8 +191,32 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
                   {client.name}
                 </option>
               ))}
+              <option value="new">Add new client</option>
             </select>
             {errors.client_id && <span className="error">{errors.client_id.message}</span>}
+
+            {showNewClient && (
+              <div className="add-client-form">
+                <input
+                  type="text"
+                  placeholder="Client name"
+                  value={newClient.name}
+                  onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
+                />
+                <input
+                  type="text"
+                  placeholder="Contact info"
+                  value={newClient.contact_info}
+                  onChange={(e) => setNewClient({ ...newClient, contact_info: e.target.value })}
+                />
+                <input
+                  type="text"
+                  placeholder="Telegram"
+                  value={newClient.tg_alias}
+                  onChange={(e) => setNewClient({ ...newClient, tg_alias: e.target.value })}
+                />
+              </div>
+            )}
           </div>
 
           <div className="form-actions">
