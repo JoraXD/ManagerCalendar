@@ -11,11 +11,15 @@ import uvicorn
 import requests
 
 # Database setup
+<<<<<<< Updated upstream
 # Default to a Neon database connection if DATABASE_URL is not provided
 DATABASE_URL = os.getenv(
     "postgresql://managerCalendae_owner:npg_CtWUcO7Mxi5f@ep-gentle-feather-a8vcmx1e-pooler.eastus2.azure.neon.tech/managerCalendae?sslmode=require",
     "postgresql://user:password@ep-example.us-east-2.aws.neon.tech/neondb?sslmode=require",
 )
+=======
+DATABASE_URL = os.getenv("postgresql://managerCalendae_owner:npg_CtWUcO7Mxi5f@ep-gentle-feather-a8vcmx1e-pooler.eastus2.azure.neon.tech/managerCalendae?sslmode=require", "postgresql://user:password@localhost:5432/tours")
+>>>>>>> Stashed changes
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
