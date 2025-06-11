@@ -1,9 +1,11 @@
-import React from 'react';
+// Модальное окно создания тура. Можно добавить нового заказчика при заполнении формы
+
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
 import { X, Calendar, MapPin, Users, Clock, DollarSign } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { createTour, CreateTourData, Client } from '../services/api';
+import { createTour, createClient, CreateTourData, CreateClientData, Client } from '../services/api';
 import './CreateTourModal.css';
 
 interface CreateTourModalProps {
@@ -18,8 +20,10 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
   clients
 }) => {
   const { t } = useLanguage();
+// queryClient нужен для обновления кэша после успешных запросов
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateTourData>();
+// useForm управляет состоянием элементов формы
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<CreateTourData>();
 
   const createTourMutation = useMutation(createTour, {
     onSuccess: () => {
@@ -32,21 +36,46 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
     }
   });
 
-  const onSubmit = (data: CreateTourData) => {
+// Мутация для создания нового заказчика
+  const createClientMutation = useMutation(createClient, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('clients');
+    },
+  });
+
+// Показывать форму добавления заказчика
+  const [showNewClient, setShowNewClient] = useState(false);
+// Состояние для полей нового заказчика
+  const [newClient, setNewClient] = useState<CreateClientData>({
+    name: '',
+    contact_info: '',
+    tg_alias: '',
+  });
+
+// Отправка формы: при необходимости создаём заказчика и затем тур
+  const onSubmit = async (data: CreateTourData) => {
+    let clientId = data.client_id;
+    if (data.client_id === 'new') {
+      const created = await createClientMutation.mutateAsync(newClient);
+      clientId = String(created.id);
+    }
+
     createTourMutation.mutate({
       ...data,
       price: Number(data.price),
       group_size: Number(data.group_size),
       duration: Number(data.duration),
-      client_id: Number(data.client_id)
+      client_id: Number(clientId)
     });
   };
 
   if (!open) return null;
 
+// Разметка модального окна
   return (
     <div className="modal-overlay">
       <div className="modal-content">
+{/* Заголовок окна */}
         <div className="modal-header">
           <h2>{t('create_tour')}</h2>
           <button
@@ -57,6 +86,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
           </button>
         </div>
 
+{/* Название тура */}
         <form onSubmit={handleSubmit(onSubmit)} className="tour-form">
           <div className="form-group">
             <label htmlFor="name">{t('tour_name')}</label>
@@ -65,6 +95,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               {...register('name', { required: 'Tour name is required' })}
               placeholder={t('tour_name')}
             />
+{/* Описание */}
             {errors.name && <span className="error">{errors.name.message}</span>}
           </div>
 
@@ -75,6 +106,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               {...register('description')}
               placeholder={t('description')}
               rows={3}
+{/* Дата и продолжительность */}
             />
           </div>
 
@@ -96,6 +128,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               <label htmlFor="duration">{t('duration')}</label>
               <div className="input-with-icon">
                 <Clock size={16} />
+{/* Место проведения */}
                 <input
                   id="duration"
                   type="number"
@@ -108,6 +141,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               {errors.duration && <span className="error">{errors.duration.message}</span>}
             </div>
           </div>
+{/* Размер группы и цена */}
 
           <div className="form-group">
             <label htmlFor="venue">{t('venue')}</label>
@@ -139,6 +173,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
             </div>
 
             <div className="form-group">
+{/* Выбор заказчика */}
               <label htmlFor="price">{t('price')}</label>
               <div className="input-with-icon">
                 <DollarSign size={16} />
@@ -160,6 +195,11 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
             <select
               id="client_id"
               {...register('client_id', { required: 'Client selection is required' })}
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue('client_id', value);
+                setShowNewClient(value === 'new');
+              }}
             >
               <option value="">{t('client')}</option>
               {clients.map(client => (
@@ -167,10 +207,36 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
                   {client.name}
                 </option>
               ))}
+              <option value="new">Add new client</option>
             </select>
             {errors.client_id && <span className="error">{errors.client_id.message}</span>}
+
+{/* Поля нового заказчика */}
+            {showNewClient && (
+              <div className="add-client-form">
+                <input
+                  type="text"
+                  placeholder="Client name"
+                  value={newClient.name}
+                  onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
+                />
+                <input
+                  type="text"
+                  placeholder="Contact info"
+                  value={newClient.contact_info}
+                  onChange={(e) => setNewClient({ ...newClient, contact_info: e.target.value })}
+                />
+                <input
+                  type="text"
+                  placeholder="Telegram"
+                  value={newClient.tg_alias}
+                  onChange={(e) => setNewClient({ ...newClient, tg_alias: e.target.value })}
+                />
+              </div>
+            )}
           </div>
 
+{/* Кнопки действия */}
           <div className="form-actions">
             <button
               type="button"
@@ -194,3 +260,4 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
 };
 
 export default CreateTourModal;
+
