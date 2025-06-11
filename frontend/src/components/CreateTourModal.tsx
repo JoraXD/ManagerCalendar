@@ -1,3 +1,5 @@
+// Модальное окно создания тура. Можно добавить нового заказчика при заполнении формы
+
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
@@ -18,7 +20,9 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
   clients
 }) => {
   const { t } = useLanguage();
+// queryClient нужен для обновления кэша после успешных запросов
   const queryClient = useQueryClient();
+// useForm управляет состоянием элементов формы
   const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<CreateTourData>();
 
   const createTourMutation = useMutation(createTour, {
@@ -32,19 +36,23 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
     }
   });
 
+// Мутация для создания нового заказчика
   const createClientMutation = useMutation(createClient, {
     onSuccess: () => {
       queryClient.invalidateQueries('clients');
     },
   });
 
+// Показывать форму добавления заказчика
   const [showNewClient, setShowNewClient] = useState(false);
+// Состояние для полей нового заказчика
   const [newClient, setNewClient] = useState<CreateClientData>({
     name: '',
     contact_info: '',
     tg_alias: '',
   });
 
+// Отправка формы: при необходимости создаём заказчика и затем тур
   const onSubmit = async (data: CreateTourData) => {
     let clientId = data.client_id;
     if (data.client_id === 'new') {
@@ -63,9 +71,11 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
 
   if (!open) return null;
 
+// Разметка модального окна
   return (
     <div className="modal-overlay">
       <div className="modal-content">
+{/* Заголовок окна */}
         <div className="modal-header">
           <h2>{t('create_tour')}</h2>
           <button
@@ -76,6 +86,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
           </button>
         </div>
 
+{/* Название тура */}
         <form onSubmit={handleSubmit(onSubmit)} className="tour-form">
           <div className="form-group">
             <label htmlFor="name">{t('tour_name')}</label>
@@ -84,6 +95,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               {...register('name', { required: 'Tour name is required' })}
               placeholder={t('tour_name')}
             />
+{/* Описание */}
             {errors.name && <span className="error">{errors.name.message}</span>}
           </div>
 
@@ -94,6 +106,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               {...register('description')}
               placeholder={t('description')}
               rows={3}
+{/* Дата и продолжительность */}
             />
           </div>
 
@@ -115,6 +128,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               <label htmlFor="duration">{t('duration')}</label>
               <div className="input-with-icon">
                 <Clock size={16} />
+{/* Место проведения */}
                 <input
                   id="duration"
                   type="number"
@@ -127,6 +141,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               {errors.duration && <span className="error">{errors.duration.message}</span>}
             </div>
           </div>
+{/* Размер группы и цена */}
 
           <div className="form-group">
             <label htmlFor="venue">{t('venue')}</label>
@@ -158,6 +173,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
             </div>
 
             <div className="form-group">
+{/* Выбор заказчика */}
               <label htmlFor="price">{t('price')}</label>
               <div className="input-with-icon">
                 <DollarSign size={16} />
@@ -195,6 +211,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
             </select>
             {errors.client_id && <span className="error">{errors.client_id.message}</span>}
 
+{/* Поля нового заказчика */}
             {showNewClient && (
               <div className="add-client-form">
                 <input
@@ -219,6 +236,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
             )}
           </div>
 
+{/* Кнопки действия */}
           <div className="form-actions">
             <button
               type="button"
@@ -242,3 +260,4 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
 };
 
 export default CreateTourModal;
+

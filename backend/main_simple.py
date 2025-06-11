@@ -1,3 +1,4 @@
+# Импорт необходимых библиотек
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text, Boolean, ForeignKey, DECIMAL
@@ -11,7 +12,8 @@ import uvicorn
 import requests
 
 # Database setup
-# Default to a Neon database connection if DATABASE_URL is not provided
+# Читаем строку подключения из переменной окружения DATABASE_URL.
+# Если переменная не задана, используется тестовый URL Neon.
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql://user:password@ep-example.us-east-2.aws.neon.tech/neondb?sslmode=require",
@@ -19,6 +21,7 @@ DATABASE_URL = os.getenv(
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+# Создаём соединение с БД и фабрику сессий
 
 # FastAPI app
 app = FastAPI(title="Tour Guide Manager API")
@@ -136,6 +139,7 @@ class TourResponse(TourBase):
         from_attributes = True
 
 # Dependency
+# Зависимость FastAPI, выдающая сессию БД
 def get_db():
     db = SessionLocal()
     try:
@@ -165,6 +169,7 @@ async def send_telegram_notification(chat_id: str, message: str) -> bool:
         print(f"Error sending Telegram notification: {e}")
         return False
 
+# ------- Работа с заказчиками -------
 # API Routes
 @app.get("/clients", response_model=List[ClientResponse])
 def get_clients(db: Session = Depends(get_db)):
@@ -179,6 +184,7 @@ def create_client(client: ClientCreate, db: Session = Depends(get_db)):
     db.refresh(db_client)
     return db_client
 
+# ------- Работа с гидами -------
 @app.get("/guides", response_model=List[GuideResponse])
 def get_guides(db: Session = Depends(get_db)):
     guides = db.query(Guide).all()
@@ -188,10 +194,9 @@ def get_guides(db: Session = Depends(get_db)):
 def create_guide(guide: GuideCreate, db: Session = Depends(get_db)):
     db_guide = Guide(**guide.dict())
     db.add(db_guide)
-    db.commit()
-    db.refresh(db_guide)
     return db_guide
 
+# ------- Работа с турами -------
 @app.get("/tours", response_model=List[TourResponse])
 def get_tours(db: Session = Depends(get_db)):
     tours = db.query(Tour).all()
@@ -270,7 +275,7 @@ async def assign_guide_to_tour(tour_id: int, guide_data: dict, db: Session = Dep
     
     return db_tour
 
-# Create database tables on startup
+# При запуске приложения создаём таблицы и наполняем тестовыми данными
 @app.on_event("startup")
 async def startup_event():
     Base.metadata.create_all(bind=engine)
