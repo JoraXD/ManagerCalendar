@@ -13,7 +13,7 @@ import requests
 # Database setup
 # Default to a Neon database connection if DATABASE_URL is not provided
 DATABASE_URL = os.getenv(
-    "DATABASE_URL",
+    "postgresql://managerCalendae_owner:npg_CtWUcO7Mxi5f@ep-gentle-feather-a8vcmx1e-pooler.eastus2.azure.neon.tech/managerCalendae?sslmode=require",
     "postgresql://user:password@ep-example.us-east-2.aws.neon.tech/neondb?sslmode=require",
 )
 engine = create_engine(DATABASE_URL)
