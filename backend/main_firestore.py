@@ -8,7 +8,22 @@ from dotenv import load_dotenv
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+fedqa0-codex/rename-classes-and-paths-in-api.ts
+load_dotenv()  # Загружает переменные из .env
 
+# Try to locate the Firebase service account JSON file. Users can provide the
+# path via environment variables. If not set, fall back to `.venv/google-services.json`
+# relative to the project root to make local development easier.
+cred_path = os.getenv("FIREBASE_CREDENTIALS") or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+if not cred_path:
+    # Look for `.venv/google-services.json` next to the repository root
+    default_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".venv", "google-services.json"))
+    if os.path.exists(default_path):
+        cred_path = default_path
+    else:
+        raise RuntimeError(
+            "Firebase credentials not found. Set FIREBASE_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS environment variables or place google-services.json in .venv/"
+        )
 
 cred = credentials.Certificate(cred_path)
 firebase_admin.initialize_app(cred)
