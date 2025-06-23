@@ -4,11 +4,13 @@ from pydantic import BaseModel
 from typing import List
 import os
 import uvicorn
+from dotenv import load_dotenv
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+load_dotenv() # Загружает переменные из .env
 
-cred_path = os.getenv(".venv/google-services.json")
+cred_path = os.getenv("FIREBASE_CREDENTIALS")
 if cred_path:
     cred = credentials.Certificate(cred_path)
     firebase_admin.initialize_app(cred)
