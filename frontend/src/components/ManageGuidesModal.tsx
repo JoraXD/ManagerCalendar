@@ -6,8 +6,11 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { createGuide, CreateGuideData, fetchGuides, Guide } from '../services/api';
 import './ManageGuidesModal.css';
 
+// Свойства модального окна управления гидами
 interface ManageGuidesModalProps {
+  // Признак открытия окна
   open: boolean;
+  // Колбэк для изменения состояния
   onOpenChange: (open: boolean) => void;
 }
 
@@ -17,10 +20,13 @@ const ManageGuidesModal: React.FC<ManageGuidesModalProps> = ({
 }) => {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
+  // Форма для добавления нового гида
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateGuideData>();
 
+  // Загружаем список гидов
   const { data: guides = [], isLoading } = useQuery('guides', fetchGuides);
 
+  // Мутация для добавления гида
   const createGuideMutation = useMutation(createGuide, {
     onSuccess: () => {
       queryClient.invalidateQueries('guides');
@@ -31,15 +37,18 @@ const ManageGuidesModal: React.FC<ManageGuidesModalProps> = ({
     }
   });
 
+  // Отправка формы добавления гида
   const onSubmit = (data: CreateGuideData) => {
     createGuideMutation.mutate(data);
   };
 
+  // Если окно закрыто, ничего не отображаем
   if (!open) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content large">
+        {/* Заголовок модального окна */}
         <div className="modal-header">
           <h2>Manage Guides</h2>
           <button
@@ -62,6 +71,7 @@ const ManageGuidesModal: React.FC<ManageGuidesModalProps> = ({
                 ) : (
                   guides.map((guide: Guide) => (
                     <div key={guide.id} className="guide-item">
+                      {/* Информация о гиде */}
                       <div className="guide-info">
                         <h4>{guide.name}</h4>
                         <div className="guide-details">
@@ -70,6 +80,7 @@ const ManageGuidesModal: React.FC<ManageGuidesModalProps> = ({
                           {guide.tg_alias && <span><MessageCircle size={14} /> @{guide.tg_alias}</span>}
                         </div>
                       </div>
+                      {/* Статистика по гиду */}
                       <div className="guide-stats">
                         <span className="tours-count">{guide.total_tours} tours</span>
                         <span className="earnings">${guide.total_earnings}</span>

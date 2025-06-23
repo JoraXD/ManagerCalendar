@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+// Базовый URL для всех запросов к серверу
 const API_BASE_URL = '/api';
 
+// Экземпляр axios с общими настройками
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -9,6 +11,7 @@ const api = axios.create({
   },
 });
 
+// Описание типов данных, которые возвращает API
 export interface Client {
   id: number;
   name: string;
@@ -74,7 +77,7 @@ export interface CreateClientData {
   black_list?: boolean;
 }
 
-// Tours API
+// --- Методы работы с турами ---
 export const fetchTours = async (): Promise<Tour[]> => {
   const response = await api.get('/tours');
   return response.data;
@@ -104,7 +107,7 @@ export const assignGuideToTour = async (tourId: number, guideId: number): Promis
   return response.data;
 };
 
-// Clients API
+// --- Методы работы с клиентами ---
 export const fetchClients = async (): Promise<Client[]> => {
   const response = await api.get('/clients');
   return response.data;
@@ -115,7 +118,7 @@ export const createClient = async (clientData: CreateClientData): Promise<Client
   return response.data;
 };
 
-// Guides API
+// --- Методы работы с гидами ---
 export const fetchGuides = async (): Promise<Guide[]> => {
   const response = await api.get('/guides');
   return response.data;

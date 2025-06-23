@@ -1,11 +1,14 @@
 import { createContext, useContext, ReactNode } from 'react';
 
+// Тип контекста: функция t для получения перевода строки
 interface LanguageContextType {
   t: (key: string) => string;
 }
 
+// Создаем сам контекст
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Словарь переводов (пока только русский язык)
 const translations = {
   ru: {
     // Navigation
@@ -85,7 +88,9 @@ const translations = {
   }
 };
 
+// Провайдер контекста, используем его в корне приложения
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+  // Функция для получения перевода по ключу
   const t = (key: string): string => {
     return translations.ru[key as keyof typeof translations.ru] || key;
   };
@@ -97,6 +102,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Хук для доступа к контексту языка
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (context === undefined) {
