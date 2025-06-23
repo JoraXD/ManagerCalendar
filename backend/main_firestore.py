@@ -8,13 +8,7 @@ from dotenv import load_dotenv
 
 import firebase_admin
 from firebase_admin import credentials, firestore
-load_dotenv() # Загружает переменные из .env
 
-cred_path = os.getenv("FIREBASE_CREDENTIALS") or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-if not cred_path:
-    raise RuntimeError(
-        "Firebase credentials not found. Set FIREBASE_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS environment variables"
-    )
 
 cred = credentials.Certificate(cred_path)
 firebase_admin.initialize_app(cred)
