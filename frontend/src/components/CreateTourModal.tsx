@@ -6,9 +6,13 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { createTour, createClient, CreateTourData, CreateClientData, Client } from '../services/api';
 import './CreateTourModal.css';
 
+// Свойства модального окна создания тура
 interface CreateTourModalProps {
+  // Признак открытия окна
   open: boolean;
+  // Колбэк для изменения состояния (открыто/закрыто)
   onOpenChange: (open: boolean) => void;
+  // Список доступных клиентов
   clients: Client[];
 }
 
@@ -19,8 +23,10 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
 }) => {
   const { t } = useLanguage();
   const queryClient = useQueryClient();
+  // Инициализация формы для ввода данных тура
   const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<CreateTourData>();
 
+  // Мутация для отправки нового тура на сервер
   const createTourMutation = useMutation(createTour, {
     onSuccess: () => {
       queryClient.invalidateQueries('tours');
@@ -32,19 +38,23 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
     }
   });
 
+  // Мутация для создания нового клиента прямо из формы тура
   const createClientMutation = useMutation(createClient, {
     onSuccess: () => {
       queryClient.invalidateQueries('clients');
     },
   });
 
+  // Показывать ли форму добавления нового клиента
   const [showNewClient, setShowNewClient] = useState(false);
+  // Данные нового клиента
   const [newClient, setNewClient] = useState<CreateClientData>({
     name: '',
     contact_info: '',
     tg_alias: '',
   });
 
+  // Отправка формы создания тура
   const onSubmit = async (data: CreateTourData) => {
     let clientId = data.client_id;
     if (data.client_id === 'new') {
@@ -61,11 +71,13 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
     });
   };
 
+  // Если окно закрыто, ничего не рендерим
   if (!open) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
+        {/* Заголовок модального окна */}
         <div className="modal-header">
           <h2>{t('create_tour')}</h2>
           <button
@@ -76,6 +88,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
           </button>
         </div>
 
+        {/* Форма создания тура */}
         <form onSubmit={handleSubmit(onSubmit)} className="tour-form">
           <div className="form-group">
             <label htmlFor="name">{t('tour_name')}</label>
@@ -89,6 +102,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
 
           <div className="form-group">
             <label htmlFor="description">{t('description')}</label>
+            {/* Описание тура */}
             <textarea
               id="description"
               {...register('description')}
@@ -102,6 +116,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               <label htmlFor="date">{t('date')} & {t('time')}</label>
               <div className="input-with-icon">
                 <Calendar size={16} />
+                {/* Дата и время тура */}
                 <input
                   id="date"
                   type="datetime-local"
@@ -115,6 +130,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               <label htmlFor="duration">{t('duration')}</label>
               <div className="input-with-icon">
                 <Clock size={16} />
+                {/* Продолжительность экскурсии в часах */}
                 <input
                   id="duration"
                   type="number"
@@ -132,6 +148,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
             <label htmlFor="venue">{t('venue')}</label>
             <div className="input-with-icon">
               <MapPin size={16} />
+              {/* Место проведения тура */}
               <input
                 id="venue"
                 {...register('venue', { required: 'Venue is required' })}
@@ -146,6 +163,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               <label htmlFor="group_size">{t('group_size')}</label>
               <div className="input-with-icon">
                 <Users size={16} />
+                {/* Размер группы */}
                 <input
                   id="group_size"
                   type="number"
@@ -161,6 +179,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
               <label htmlFor="price">{t('price')}</label>
               <div className="input-with-icon">
                 <DollarSign size={16} />
+                {/* Стоимость экскурсии */}
                 <input
                   id="price"
                   type="number"
@@ -197,6 +216,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
 
             {showNewClient && (
               <div className="add-client-form">
+                {/* Форма добавления нового клиента */}
                 <input
                   type="text"
                   placeholder="Client name"
@@ -220,6 +240,7 @@ const CreateTourModal: React.FC<CreateTourModalProps> = ({
           </div>
 
           <div className="form-actions">
+            {/* Кнопки управления формой */}
             <button
               type="button"
               onClick={() => onOpenChange(false)}
