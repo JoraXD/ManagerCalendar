@@ -14,7 +14,6 @@ This project provides a small FastAPI backend and React frontend for managing ex
    ```
 
 ## Database
-
 The backend now uses Firebase Firestore instead of PostgreSQL. Provide a Firebase service account JSON file. The server looks for the path in the `FIREBASE_CREDENTIALS` (or `GOOGLE_APPLICATION_CREDENTIALS`) environment variable. If those are not set, it will try `.venv/google-services.json` by default.
 
 Example:

@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+fedqa0-codex/rename-classes-and-paths-in-api.ts
 load_dotenv()  # Загружает переменные из .env
 
 # Try to locate the Firebase service account JSON file. Users can provide the
