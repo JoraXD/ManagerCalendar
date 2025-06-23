@@ -1,3 +1,5 @@
+// LanguageContext.tsx
+// Предоставляет функцию t() для локализации интерфейса.
 import { createContext, useContext, ReactNode } from 'react';
 
 // Тип контекста: функция t для получения перевода строки

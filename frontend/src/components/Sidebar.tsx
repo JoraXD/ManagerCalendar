@@ -1,3 +1,5 @@
+// Sidebar.tsx
+// Боковая панель со статистикой, фильтрами и действиями.
 import React from 'react';
 import { Calendar, Plus, Users, BarChart3, Filter } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
