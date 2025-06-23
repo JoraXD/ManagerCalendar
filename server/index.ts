@@ -9,7 +9,7 @@ const PORT = 5000;
 console.log('Starting Tour Guide Manager...');
 
 // Start Python backend
-const backend = spawn('python', ['main_simple.py'], {
+const backend = spawn('python', ['main_firestore.py'], {
   cwd: path.join(process.cwd(), 'backend'),
   stdio: 'inherit'
 });

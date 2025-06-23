@@ -15,10 +15,12 @@ This project provides a small FastAPI backend and React frontend for managing to
 
 ## Database
 
-The backend uses PostgreSQL via SQLAlchemy. Set the `DATABASE_URL` environment variable with your connection string. By default the app targets a [Neon](https://neon.tech/) instance:
+The backend now uses Firebase Firestore instead of PostgreSQL. Provide a Firebase service account JSON file and set the `FIREBASE_CREDENTIALS` environment variable to its path.
+
+Example:
 
 ```
-postgresql://user:password@ep-example.us-east-2.aws.neon.tech/neondb?sslmode=require
+export FIREBASE_CREDENTIALS=/path/to/serviceAccount.json
 ```
 
-Replace the credentials with your Neon database details.
+Firestore collections named `excursions` and `guides` will be created automatically.
