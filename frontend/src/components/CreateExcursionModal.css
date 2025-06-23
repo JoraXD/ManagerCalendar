@@ -1,5 +1,5 @@
-/* CreateTourModal.css
-   Стили модального окна создания тура и формы. */
+/* CreateExcursionModal.css
+   Стили модального окна создания экскурсии и формы. */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -55,7 +55,7 @@
   color: #ef4444;
 }
 
-.tour-form {
+.excursion-form {
   padding: 20px;
 }
 

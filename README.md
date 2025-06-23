@@ -1,6 +1,6 @@
 # Tour Guide Manager
 
-This project provides a small FastAPI backend and React frontend for managing tours and guides.
+This project provides a small FastAPI backend and React frontend for managing excursions and users.
 
 ## Development
 
@@ -15,12 +15,12 @@ This project provides a small FastAPI backend and React frontend for managing to
 
 ## Database
 
-The backend now uses Firebase Firestore instead of PostgreSQL. Provide a Firebase service account JSON file and set the `FIREBASE_CREDENTIALS` environment variable to its path.
+The backend now uses Firebase Firestore instead of PostgreSQL. Provide a Firebase service account JSON file. The server looks for the path in the `FIREBASE_CREDENTIALS` (or `GOOGLE_APPLICATION_CREDENTIALS`) environment variable. If those are not set, it will try `.venv/google-services.json` by default.
 
 Example:
 
 ```
-export FIREBASE_CREDENTIALS=/path/to/serviceAccount.json
+export FIREBASE_CREDENTIALS=.venv/google-services.json
 ```
 
-Firestore collections named `excursions` and `guides` will be created automatically.
+Firestore collections named `excursions` and `users` will be created automatically.
