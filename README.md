@@ -20,7 +20,7 @@ The backend now uses Firebase Firestore instead of PostgreSQL. Provide a Firebas
 Example:
 
 ```
-export FIREBASE_CREDENTIALS=/path/to/serviceAccount.json
+export FIREBASE_CREDENTIALS=.venv/google-services.json
 ```
 
 Firestore collections named `excursions` and `users` will be created automatically.
