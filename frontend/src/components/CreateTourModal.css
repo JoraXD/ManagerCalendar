@@ -1,3 +1,5 @@
+/* CreateTourModal.css
+   Стили модального окна создания тура и формы. */
 .modal-overlay {
   position: fixed;
   top: 0;

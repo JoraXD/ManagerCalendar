@@ -1,3 +1,5 @@
+/* GlobalStyles.css
+   Общие стили для элементов форм по всему приложению. */
 /* Global input styling */
 input, textarea, select {
   background-color: white !important;

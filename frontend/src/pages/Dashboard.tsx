@@ -1,3 +1,5 @@
+// Dashboard.tsx
+// Главная страница с календарем, сайдбаром и модальными окнами.
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import CalendarGrid from '../components/CalendarGrid';

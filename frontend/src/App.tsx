@@ -1,3 +1,7 @@
+// App.tsx
+// Главный компонент всего приложения.
+// Здесь подключаем провайдеры переводов и react-query,
+// а также определяем маршруты через React Router.
 // import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';

@@ -1,3 +1,5 @@
+// ManageGuidesModal.tsx
+// Модальное окно для просмотра и добавления гидов.
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from 'react-query';

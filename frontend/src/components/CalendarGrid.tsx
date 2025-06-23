@@ -1,3 +1,5 @@
+// CalendarGrid.tsx
+// Отображает сетку календаря с турами и обработчиками кликов.
 import React from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isSameMonth } from 'date-fns';
 import { Tour } from '../services/api';
