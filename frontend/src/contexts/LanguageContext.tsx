@@ -15,8 +15,8 @@ const translations = {
   ru: {
     // Navigation
     'dashboard': 'Панель управления',
-    'tours': 'Туры',
-    'guides': 'Гиды',
+    'excursions': 'Экскурсии',
+    'users': 'Пользователи',
     'clients': 'Клиенты',
     
     // Calendar
@@ -27,7 +27,7 @@ const translations = {
     'today': 'Сегодня',
     
     // Tours
-    'create_tour': 'Создать тур',
+    'create_excursion': 'Создать экскурсию',
     'tour_name': 'Название тура',
     'description': 'Описание',
     'date': 'Дата',
@@ -48,15 +48,15 @@ const translations = {
     'cancelled': 'Отменен',
     
     // Guides
-    'manage_guides': 'Управление гидами',
-    'add_guide': 'Добавить гида',
-    'guide_name': 'Имя гида',
+    'manage_users': 'Управление гидами',
+    'add_user': 'Добавить гида',
+    'user_name': 'Имя гида',
     'email': 'Email',
     'phone': 'Телефон',
     'telegram': 'Telegram',
     'contact_info': 'Контактная информация',
     'total_earnings': 'Общий доход',
-    'total_tours': 'Всего туров',
+    'total_excursions': 'Всего экскурсий',
     'active': 'Активный',
     'inactive': 'Неактивный',
     
@@ -75,15 +75,15 @@ const translations = {
     
     // Statistics
     'statistics': 'Статистика',
-    'total_tours_count': 'Всего туров',
-    'confirmed_tours': 'Подтвержденные туры',
-    'pending_tours': 'Туры в ожидании',
+    'total_excursions_count': 'Всего туров',
+    'confirmed_excursions': 'Подтвержденные туры',
+    'pending_excursions': 'Туры в ожидании',
     
     // Filters
     'filters': 'Фильтры',
     'show_confirmed': 'Показать подтвержденные',
     'show_pending': 'Показать в ожидании',
-    'show_guide_needed': 'Показать требующие гида',
+    'show_user_needed': 'Показать требующие гида',
     
     // View Mode
     'view_mode': 'Режим просмотра',

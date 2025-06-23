@@ -1,11 +1,9 @@
 // api.ts
-// Axios-инстанс и функции для работы с серверным API.
+// Axios instance and API calls for the backend.
 import axios from 'axios';
 
-// Базовый URL для всех запросов к серверу
 const API_BASE_URL = '/api';
 
-// Экземпляр axios с общими настройками
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -13,122 +11,78 @@ const api = axios.create({
   },
 });
 
-// Описание типов данных, которые возвращает API
-export interface Client {
-  id: number;
+export interface User {
+  id: string;
   name: string;
-  contact_info?: string;
-  tg_alias?: string;
-  black_list: boolean;
-  created_at: string;
+  telegram: string;
+  excursionsDone: number;
 }
 
-export interface Guide {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-  tg_alias?: string;
-  contact_info?: string;
-  total_earnings: number;
-  total_tours: number;
-  is_active: boolean;
-  created_at: string;
-}
-
-export interface Tour {
-  id: number;
-  name: string;
-  description?: string;
+export interface Excursion {
+  id: string;
+  assignedTo: string;
   date: string;
-  venue: string;
-  group_size: number;
-  duration: number;
-  client_id: number;
-  price: number;
-  status: string;
-  assigned_guide_id?: number;
-  created_at: string;
+  lunch: boolean;
+  masterClass: boolean;
+  meetingPlace: string;
+  people: number;
+  route: string;
+  time: string;
+  type: string;
 }
 
-export interface CreateTourData {
+export interface CreateUserData {
   name: string;
-  description?: string;
+  telegram: string;
+  excursionsDone?: number;
+}
+
+export interface CreateExcursionData {
+  assignedTo: string;
   date: string;
-  venue: string;
-  group_size: number;
-  duration: number;
-  client_id: number;
-  price: number;
-  status?: string;
+  lunch: boolean;
+  masterClass: boolean;
+  meetingPlace: string;
+  people: number;
+  route: string;
+  time: string;
+  type: string;
 }
 
-export interface CreateGuideData {
-  name: string;
-  email: string;
-  phone?: string;
-  tg_alias?: string;
-  contact_info?: string;
-  is_active?: boolean;
-}
-
-export interface CreateClientData {
-  name: string;
-  contact_info?: string;
-  tg_alias?: string;
-  black_list?: boolean;
-}
-
-// --- Методы работы с турами ---
-export const fetchTours = async (): Promise<Tour[]> => {
-  const response = await api.get('/tours');
+// Users
+export const fetchUsers = async (): Promise<User[]> => {
+  const response = await api.get('/users');
   return response.data;
 };
 
-export const fetchTour = async (id: number): Promise<Tour> => {
-  const response = await api.get(`/tours/${id}`);
+export const createUser = async (userData: CreateUserData): Promise<User> => {
+  const response = await api.post('/users', userData);
   return response.data;
 };
 
-export const createTour = async (tourData: CreateTourData): Promise<Tour> => {
-  const response = await api.post('/tours', tourData);
+// Excursions
+export const fetchExcursions = async (): Promise<Excursion[]> => {
+  const response = await api.get('/excursions');
   return response.data;
 };
 
-export const updateTour = async (id: number, tourData: CreateTourData): Promise<Tour> => {
-  const response = await api.put(`/tours/${id}`, tourData);
+export const fetchExcursion = async (id: string): Promise<Excursion> => {
+  const response = await api.get(`/excursions/${id}`);
   return response.data;
 };
 
-export const deleteTour = async (id: number): Promise<void> => {
-  await api.delete(`/tours/${id}`);
-};
-
-export const assignGuideToTour = async (tourId: number, guideId: number): Promise<Tour> => {
-  const response = await api.post(`/tours/${tourId}/assign-guide`, { guideId });
+export const createExcursion = async (excursionData: CreateExcursionData): Promise<Excursion> => {
+  const response = await api.post('/excursions', excursionData);
   return response.data;
 };
 
-// --- Методы работы с клиентами ---
-export const fetchClients = async (): Promise<Client[]> => {
-  const response = await api.get('/clients');
+export const updateExcursion = async (id: string, excursionData: CreateExcursionData): Promise<Excursion> => {
+  const response = await api.put(`/excursions/${id}`, excursionData);
   return response.data;
 };
 
-export const createClient = async (clientData: CreateClientData): Promise<Client> => {
-  const response = await api.post('/clients', clientData);
-  return response.data;
-};
-
-// --- Методы работы с гидами ---
-export const fetchGuides = async (): Promise<Guide[]> => {
-  const response = await api.get('/guides');
-  return response.data;
-};
-
-export const createGuide = async (guideData: CreateGuideData): Promise<Guide> => {
-  const response = await api.post('/guides', guideData);
-  return response.data;
+export const deleteExcursion = async (id: string): Promise<void> => {
+  await api.delete(`/excursions/${id}`);
 };
 
 export default api;
