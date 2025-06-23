@@ -28,7 +28,7 @@ app.add_middleware(
 )
 
 excursions_ref = db.collection("excursions")
-guides_ref = db.collection("guides")
+users_ref = db.collection("users")
 
 
 class Excursion(BaseModel):
@@ -43,7 +43,7 @@ class Excursion(BaseModel):
     type: str
 
 
-class Guide(BaseModel):
+class User(BaseModel):
     name: str
     telegram: str
     excursionsDone: int
@@ -53,49 +53,49 @@ class ExcursionOut(Excursion):
     id: str
 
 
-class GuideOut(Guide):
+class UserOut(User):
     id: str
 
 
-@app.get("/guides", response_model=List[GuideOut])
-def list_guides():
-    docs = guides_ref.stream()
-    return [GuideOut(id=doc.id, **doc.to_dict()) for doc in docs]
+@app.get("/users", response_model=List[UserOut])
+def list_users():
+    docs = users_ref.stream()
+    return [UserOut(id=doc.id, **doc.to_dict()) for doc in docs]
 
 
-@app.post("/guides", response_model=GuideOut)
-def create_guide(guide: Guide):
-    data = guide.dict()
-    doc_ref = guides_ref.document()
+@app.post("/users", response_model=UserOut)
+def create_user(user: User):
+    data = user.dict()
+    doc_ref = users_ref.document()
     doc_ref.set(data)
-    return GuideOut(id=doc_ref.id, **data)
+    return UserOut(id=doc_ref.id, **data)
 
 
-@app.get("/guides/{guide_id}", response_model=GuideOut)
-def get_guide(guide_id: str):
-    doc = guides_ref.document(guide_id).get()
+@app.get("/users/{user_id}", response_model=UserOut)
+def get_user(user_id: str):
+    doc = users_ref.document(user_id).get()
     if not doc.exists:
-        raise HTTPException(status_code=404, detail="Guide not found")
-    return GuideOut(id=doc.id, **doc.to_dict())
+        raise HTTPException(status_code=404, detail="User not found")
+    return UserOut(id=doc.id, **doc.to_dict())
 
 
-@app.put("/guides/{guide_id}", response_model=GuideOut)
-def update_guide(guide_id: str, guide: Guide):
-    doc_ref = guides_ref.document(guide_id)
+@app.put("/users/{user_id}", response_model=UserOut)
+def update_user(user_id: str, user: User):
+    doc_ref = users_ref.document(user_id)
     if not doc_ref.get().exists:
-        raise HTTPException(status_code=404, detail="Guide not found")
-    doc_ref.update(guide.dict())
+        raise HTTPException(status_code=404, detail="User not found")
+    doc_ref.update(user.dict())
     data = doc_ref.get().to_dict()
-    return GuideOut(id=doc_ref.id, **data)
+    return UserOut(id=doc_ref.id, **data)
 
 
-@app.delete("/guides/{guide_id}")
-def delete_guide(guide_id: str):
-    doc_ref = guides_ref.document(guide_id)
+@app.delete("/users/{user_id}")
+def delete_user(user_id: str):
+    doc_ref = users_ref.document(user_id)
     if not doc_ref.get().exists:
-        raise HTTPException(status_code=404, detail="Guide not found")
+        raise HTTPException(status_code=404, detail="User not found")
     doc_ref.delete()
-    return {"message": "Guide deleted"}
+    return {"message": "User deleted"}
 
 
 @app.get("/excursions", response_model=List[ExcursionOut])

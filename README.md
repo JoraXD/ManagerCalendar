@@ -1,6 +1,6 @@
 # Tour Guide Manager
 
-This project provides a small FastAPI backend and React frontend for managing tours and guides.
+This project provides a small FastAPI backend and React frontend for managing tours and users.
 
 ## Development
 
@@ -23,4 +23,4 @@ Example:
 export FIREBASE_CREDENTIALS=/path/to/serviceAccount.json
 ```
 
-Firestore collections named `excursions` and `guides` will be created automatically.
+Firestore collections named `excursions` and `users` will be created automatically.
