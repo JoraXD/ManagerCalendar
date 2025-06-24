@@ -24,8 +24,13 @@ if not cred_path:
             "Firebase credentials not found. Set FIREBASE_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS environment variables or place google-services.json in .venv/"
         )
 
-cred = credentials.Certificate(cred_path)
-firebase_admin.initialize_app(cred)
+try:
+    cred = credentials.Certificate(cred_path)
+    firebase_admin.initialize_app(cred)
+except ValueError as exc:
+    raise RuntimeError(
+        "Invalid Firebase credentials file. Please download a service account key JSON file from the Firebase console and provide its path via the FIREBASE_CREDENTIALS or GOOGLE_APPLICATION_CREDENTIALS environment variable."
+    ) from exc
 
 db = firestore.client()
 
